@@ -1,12 +1,11 @@
-import { useState } from "react"
-import Navbar from "./components/Navbar"
+import { RouterProvider } from "react-router-dom"
+import router from "./router.jsx"
 
 function App() {
 
   return (
     <>
-      <Navbar/>
-      <h1>hello</h1>
+      <RouterProvider router={router}/>     
     </>
   )
 }
