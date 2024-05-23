@@ -1,14 +1,13 @@
 import React from 'react'
-import Navbar from './components/Navbar'
+import Navbar from '../components/Navbar'
 import {Outlet} from 'react-router-dom'
-function AppLayout() {
+function AdminLayout() {
   return (
     <div>
         <Navbar/>
         <Outlet/>
-      
     </div>
   )
 }
 
-export default AppLayout
+export default AdminLayout

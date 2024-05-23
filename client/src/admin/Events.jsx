@@ -1,11 +1,11 @@
 import React from 'react'
 
-const Report = () => {
+const Events = () => {
   return (
     <div>
-      Report
+      admin events
     </div>
   )
 }
 
-export default Report
+export default Events
