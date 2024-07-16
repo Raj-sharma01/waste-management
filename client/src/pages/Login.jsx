@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
 import { UserContext } from '../context/UserContext';
+import { toast } from 'react-toastify';
 
 const LoginForm = () => {
     const { register, handleSubmit, formState: { errors } } = useForm();
@@ -15,7 +16,7 @@ const LoginForm = () => {
             const response = await axios.post('/api/auth/login', data);
             console.log(response.data)
             if (response.data.success) {
-                alert('Login successful');
+                toast.success('Login successful');
                 // localStorage.setItem('token', response.data.token);
                 console.log(response.data)
                 setUsername(response.data.username);
@@ -25,15 +26,15 @@ const LoginForm = () => {
                 if (response.data.role === 'user')
                     navigate('/');
                 else {
-                    alert(`navigating to /${response.data.role}`)
+                    console.log(`navigating to /${response.data.role}`)
                     navigate(`/${response.data.role}`)
                 }
             } else {
-                alert(response.data.message);
+                toast.error(response.data.message);
             }
         } catch (error) {
             console.error('Login error', error);
-            alert('Something went wrong');
+            toast.error('Something went wrong');
         }
     };
 

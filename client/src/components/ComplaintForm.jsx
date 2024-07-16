@@ -4,6 +4,8 @@ import { useForm } from 'react-hook-form';
 import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+
 const ComplaintForm = ({ clickedLatLng, setClickedLatLng }) => {
   const { register, handleSubmit, setValue } = useForm();
   const [address, setAddress] = useState("");
@@ -39,11 +41,12 @@ const ComplaintForm = ({ clickedLatLng, setClickedLatLng }) => {
       //   if(res.data.success){
       console.log(res.data)
       //TODO: add a notifier
-      alert('Complaint submitted successfully!'); // Optional feedback
+      toast.success('Complaint submitted successfully!'); // Optional feedback
       setClickedLatLng(null)
 
     } catch (error) {
       console.error(`error while submiting complaint ${error}`)
+      toast.error(`error while submiting complaint ${error}`)
     }
 
   };

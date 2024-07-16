@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
 import { UserContext } from '../context/UserContext';
+import { toast } from 'react-toastify';
 
 const SignupForm = () => {
     const { register, handleSubmit, formState: { errors } } = useForm();
@@ -16,17 +17,17 @@ const SignupForm = () => {
         try {
             const response = await axios.post('/api/auth/signup', data);
             if (response.data.success) {
-                alert('Signup successful');
+                toast.success('Signup successful');
                 setUsername(response.data.username);
                 setEmail(response.data.email);
                 localStorage.setItem('token', response.data.token);
                 navigate('/'); // redirect to user dashboard or another page
             } else {
-                alert(response.data.message);
+                toast.error(response.data.message);
             }
         } catch (error) {
             console.error('Signup error', error);
-            alert('Something went wrong');
+            toast.error('Something went wrong');
         }
     };
 

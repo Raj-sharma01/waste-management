@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const ComplaintList = () => {
   const [complaints, setComplaints] = useState([]);
@@ -43,11 +44,11 @@ const ComplaintList = () => {
       if (selectedOfficer) {
         try {
           await axios.post(`/api/admin/assignComplaint/${assignComplaintId}/`, { officerId: selectedOfficer });
-          alert('Complaint assigned successfully');
+          toast.success('Complaint assigned successfully');
           getComplaints(); // Refresh complaints list
         } catch (err) {
           console.error(err);
-          alert('Error assigning complaint');
+          toast.error('Error assigning complaint');
         } finally {
           setAssignComplaintId(null);
         }

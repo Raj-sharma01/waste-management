@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const OfficerComplaintsList = () => {
   const [complaints, setComplaints] = useState([]);
@@ -44,11 +45,11 @@ const OfficerComplaintsList = () => {
         status: complaint.status,
         remark: complaint.remark,
       });
-      alert('Complaint updated successfully');
+      toast.success('Complaint updated successfully');
       getComplaints(); // Refresh the complaints list after update
     } catch (error) {
       console.error('Error updating complaint:', error);
-      alert('Error updating complaint');
+      toast.error('Error updating complaint');
     }
   };
 

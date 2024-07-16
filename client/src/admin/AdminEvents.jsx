@@ -5,6 +5,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const Events = () => {
   const [calendarView, setCalendarView] = useState('dayGridMonth');
@@ -21,46 +22,21 @@ const Events = () => {
       // You may want to update the eventsList state after successful submission
       // reset(); // Reset form fields
       if(response.data.success){
-        alert("event created")
+        toast.success("event created")
       }
       else{
-        alert("could not create event")
+        toast.error("could not create event")
       }
     } catch (error) {
       console.error('Error creating event:', error);
-      alert('Error creating event:', error)
+      toast.error('Error creating event:', error)
     }
     finally{
       reset();
     }
   };
 
-  // const eventsList = [
-  //   {
-  //     id: 1,
-  //     title: 'Single Day Event',
-  //     start: '2024-05-12T10:30:00',
-  //     end: '2024-05-12T11:30:00',
-  //     backgroundColor: '#31e054', // Set background color for the event
-  //     venue: 'Event Venue 1'
-  //   },
-  //   {
-  //     id: 2,
-  //     title: 'Multi-Day Event',
-  //     start: '2024-05-14T10:30:00',
-  //     end: '2024-05-16T11:30:00',
-  //     backgroundColor: '#31e054', // Set background color for the event
-  //     venue: 'Event Venue 2'
-  //   },
-  //   {
-  //     id: 3,
-  //     title: 'Training Session',
-  //     start: '2024-05-16T09:00:00',
-  //     end: '2024-05-16T12:00:00',
-  //     backgroundColor: '#31e054',
-  //     venue: 'Event Venue 3'
-  //   }
-  // ];
+
 
   const handleDateClick = () => {
     setShowForm(true);

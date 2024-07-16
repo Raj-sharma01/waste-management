@@ -1,6 +1,7 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const CreateOfficer = () => {
     const { register, handleSubmit, formState: { errors }, reset } = useForm();
@@ -9,10 +10,10 @@ const CreateOfficer = () => {
         try {
             const res = await axios.post('/api/admin/createOfficer', data);
             console.log(res.data);
-            alert("Officer created successfully"); // You can handle the form data submission here
+            toast.success("Officer created successfully"); // You can handle the form data submission here
             reset();
         } catch (error) {
-            alert(error.response.data.message);
+            toast.error(error.response.data.message);
             console.log(error);
         } finally {
             reset();

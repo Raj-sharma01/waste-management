@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { useContext, useState } from 'react';
 import axios from 'axios';
 import { UserContext } from '../context/UserContext';
+import { toast } from 'react-toastify';
 
 const SignUpAndLogin = ({showLogin, setShowLogin}) => {
     const { register, handleSubmit } = useForm();
@@ -16,7 +17,7 @@ const SignUpAndLogin = ({showLogin, setShowLogin}) => {
             const endpoint = isLogin ? 'login' : 'signup';
             const res = await axios.post(`api/auth/${endpoint}`, data);
             if (res.data.success) {
-                alert(isLogin ? "Login Successfully!" : "Registered Successfully!");
+                toast.success(isLogin ? "Login Successfully!" : "Registered Successfully!");
                 setShowLogin(false);
                 axios.get('api/auth/profile').then(res=>{
                     if (res.data) {
@@ -31,11 +32,11 @@ const SignUpAndLogin = ({showLogin, setShowLogin}) => {
                 })
                 navigate("/"); 
             } else {
-                alert(res.data.message);
+                toast.error(res.data.message);
             }
         } catch (error) {
             console.log(error);
-            alert("Something Went Wrong");
+            toast.error("Something Went Wrong");
         }
     }
     const navigateBasedOnRole = (role) => {
