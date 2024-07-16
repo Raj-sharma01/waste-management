@@ -5,6 +5,8 @@ import { connetDB } from './config/db.js';
 import authRoute from './routes/auth.router.js'
 import cookieParser from 'cookie-parser';
 import adminRoute from './routes/admin.router.js'
+import officerRoute from './routes/officer.router.js'
+
 let app = express();
 const corsOptions = {
     origin: 'http://localhost:5173',
@@ -21,7 +23,7 @@ connetDB();
 app.use('/api/user',userRoute);
 app.use('/api/auth',authRoute);
 app.use('/api/admin',adminRoute)
-
+app.use('/api/officer',officerRoute)
 
 
 app.listen(3000, () => {

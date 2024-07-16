@@ -10,14 +10,32 @@ import ComplaintList from "./admin/ComplaintList.jsx";
 import OfficerList from "./admin/OfficerList.jsx";
 import Info from "./admin/Info.jsx";
 import CreateOfficer from "./admin/CreateOfficer.jsx";
+import OfficerLayout from "./officer/OfficerLayout.jsx";
+import OfficerDasboard from "./officer/OfficerDashboard.jsx";
+import OfficerComplaintsList from "./officer/OfficerComplaintsList.jsx";
+import LoginForm from "./pages/Login.jsx";
+import SignupForm from "./pages/Signup.jsx";
+import ProtectedRoute from "./routes/ProtectedRoute.jsx";
+import PageNotFound from "./pages/PageNotFound.jsx";
+import RoleProtection from "./routes/RoleProtention.jsx";
+import AdminEvents from "./admin/AdminEvents.jsx";
+import OfficerFacilityManagement from "./officer/OfficerFacilityManagement.jsx";
 
 const router = createBrowserRouter([
     {
-        path: "/user",
+       path:'/login',
+       element:<LoginForm/>
+    },
+    {
+        path:'/signup',
+        element:<SignupForm/>
+    },
+    {
+        path: "/",
         element: <UserLayout />,
         children: [
             {
-                path: "/user",
+                path: "/",
                 element: <Dashboard />
             },
             {
@@ -26,7 +44,7 @@ const router = createBrowserRouter([
             },
             {
                 path: 'complaints',
-                element: <Complaints />
+                element:<ProtectedRoute><Complaints /></ProtectedRoute>
             },
             {
                 path: 'events',
@@ -40,30 +58,56 @@ const router = createBrowserRouter([
         children: [
             {
                 path: "/admin",
-                element: <AdminDasboard />
+                element:<RoleProtection><AdminDasboard /></RoleProtection> 
             },
             {
                 path: 'complaints',
-                element: <ComplaintList />
+                element:<RoleProtection><ComplaintList /></RoleProtection> 
             },
             {
                 path: 'events',
-                element: <Events />
+                element:<RoleProtection> <AdminEvents/> </RoleProtection>
             },
             {
                 path: 'officers',
-                element: <OfficerList />
+                element: <RoleProtection><OfficerList /></RoleProtection>
             },
             {
                 path: 'info',
-                element: <Info />
+                element:<RoleProtection> <Info /></RoleProtection>
             },
             {
                 path: 'createofficer',
-                element: <CreateOfficer />
+                element:<RoleProtection><CreateOfficer /></RoleProtection> 
             },
         ],
     },
+    {
+        path:'/officer',
+        element:<RoleProtection><OfficerLayout/></RoleProtection>,
+        children:[
+            {
+                path:'/officer',
+                element:<RoleProtection><OfficerDasboard/></RoleProtection>
+            },
+            {
+                path:'complaints',
+                element:<RoleProtection><OfficerComplaintsList/></RoleProtection>
+            },
+            {
+                path:'events',
+                element:<RoleProtection><Events/></RoleProtection>
+            },
+            {
+                path:'facitities',
+                element:<RoleProtection><OfficerFacilityManagement/></RoleProtection>
+            }
+        ]
+    },
+    {
+     path:'*',
+     element:<PageNotFound/>
+    }
 
 ])
 

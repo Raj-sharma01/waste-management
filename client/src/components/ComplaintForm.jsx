@@ -1,10 +1,19 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-
+import { useContext } from "react";
+import { UserContext } from "../context/UserContext";
+import { useNavigate } from 'react-router-dom';
 const ComplaintForm = ({ clickedLatLng, setClickedLatLng }) => {
   const { register, handleSubmit, setValue } = useForm();
   const [address, setAddress] = useState("");
+  
+  const { id, role, setRole, setId, setUsername, username, email, setEmail } = useContext(UserContext);  // Add role context
+
+  const navigate=useNavigate();
+  if(role===null){
+    navigate('/login');
+  }
 
   setValue('address',address)
   const getAddress=async()=>{

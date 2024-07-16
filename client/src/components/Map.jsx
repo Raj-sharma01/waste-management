@@ -2,84 +2,131 @@ import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMapEvent } from 'react-leaflet';
 import "leaflet/dist/leaflet.css";
 import { Icon } from 'leaflet';
-import DustbinIcon from '../assets/dustbin.png';
 import ComplaintIcon from '../assets/danger-sign.png'
-const Map = ({ clickedLatLng, setClickedLatLng, markers, complaints }) => {
-    const [lng, setLng] = useState(86.14481091493873);
-    const [lat, setLat] = useState(22.773066457255503);
-    // const [clickedLatLng, setClickedLatLng] = useState(null);
-    console.log(complaints)
-    const getLocation = () => {
-        if ("geolocation" in navigator) {
-            navigator.geolocation.getCurrentPosition(async (position) => {
-                const latitude = position.coords.latitude;
-                const longitude = position.coords.longitude;
-                setLat(latitude);
-                setLng(longitude);
-                const res = await fetch(`https://geocode.maps.co/reverse?lat=${latitude}&lon=${longitude}&api_key=6619f83957280357978706jdvad90bc`)
-                const data = await res.json();
-                console.log(data.display_name)
-            }, function (error) {
-                console.error("Error getting user's location:", error);
+import axios from 'axios';
+import RedBinIcon from '../assets/hazardous-red-bin.png'
+import GreenBinIcon from '../assets/green-dustbin.png'
+import BlueBinIcon from '../assets/blue-dustbin.png'
+import RecyclingCenterIcon from '../assets/recycling-center.png'
+import HazardousWasteIcon from '../assets/hazardous-red-bin.png'
+import MedicalWasteIcon from '../assets/hazardous-red-bin.png'
+import DustbinIcon from '../assets/dustbin.png'
+import CompostingFacilityIcon from '../assets/waste-management.jpg'
+import LandfillSiteIcon from '../assets/waste-management.jpg'
+import WasteTransferStationIcon from '../assets/waste-management.jpg'
 
-            },
-                {
-                    enableHighAccuracy: true,
-                    timeout: 50000, // Increase timeout to give the device more time to get an accurate position
-                    maximumAge: 0
-                }
-            );
-        } else {
-            console.error("Geolocation is not available in this browser.");
+const Map = ({ clickedLatLng, setClickedLatLng, complaints,setSelectedMarker,selectedMarker,refreshMap }) => {
+    const [lng, setLng] = useState(86.14712961646475);
+    const [lat, setLat] = useState(22.774935429630094);
+    const [markers, setMarkers] = useState([]);
+     
+    const fetchFacilities = async () => {
+      try {
+        const res = await axios.get('/api/user/facilities');
+        const facilitiesData = res.data;
+        // setFacilities(facilitiesData);
+        const markersData = facilitiesData.map((facility, index) => ({
+          geocode: [facility.latitude, facility.longitude],
+          popUp: `This is a ${facility.type}`,
+          ...facility
+        }));
+        setMarkers(markersData);
+      } catch (error) {
+        console.error('Error fetching facilities:', error);
+      }
+    };
+  
+    useEffect(()=>{
+     fetchFacilities();
+    },[refreshMap]);
+
+    console.log("complaints = ",complaints)
+
+    const handleMarkerClick = (marker) => {
+        setSelectedMarker(marker);
+    };
+
+    console.log(markers)
+    // const customIcon = new Icon({
+    //     iconUrl: DustbinIcon,
+    //     iconSize: [38, 38],
+    // });
+
+    const getIcon = (type) => {
+        switch (type) {
+            case 'Red Bin':
+                return new Icon({ iconUrl: RedBinIcon, iconSize: [32, 32] });
+            case 'Green Bin':
+                return new Icon({ iconUrl: GreenBinIcon, iconSize: [32, 32] });
+            case 'Blue Bin':
+                return new Icon({ iconUrl: BlueBinIcon, iconSize: [32, 32] });
+            case 'Recycling Center':
+                return new Icon({ iconUrl: RecyclingCenterIcon, iconSize: [36, 36] });
+            case 'Composting Facility':
+                return new Icon({ iconUrl: CompostingFacilityIcon, iconSize: [36, 36] });
+            case 'Hazardous Waste Collection Point':
+                return new Icon({ iconUrl: HazardousWasteIcon, iconSize: [32, 32] });
+            case 'Medical Waste Disposal Facility':
+                return new Icon({ iconUrl: MedicalWasteIcon, iconSize: [32, 32] });
+            case 'Waste Transfer Station':
+                return new Icon({ iconUrl: WasteTransferStationIcon, iconSize: [36, 36] });
+            case 'Landfill Site':
+                return new Icon({ iconUrl: LandfillSiteIcon, iconSize: [36, 36] });
+            default:
+                return new Icon({ iconUrl: DustbinIcon, iconSize: [32, 32] });
         }
-    }
-
-    useEffect(() => {
-        getLocation();
-    }, []);
-
-
-    // const markers = [
-    //     { geocode: [22.772580915494466, 86.14583730697633], popUp: "This is a marker with id = 1" },
-    //     { geocode: [22.776359713987354, 86.14598751068115], popUp: "This is a marker with id = 2" },
-    //     { geocode: [22.775162881688356, 86.1437237262726], popUp: "This is a marker with id = 3" },
-    // ];
-
-    const customIcon = new Icon({
-        iconUrl: DustbinIcon,
-        iconSize: [38, 38],
-    });
+    };
 
     const complaintIcon = new Icon({
         iconUrl: ComplaintIcon,
-        iconSize: [38, 38]
+        iconSize: [32, 32]
     })
 
     const handleMapClick = (e) => {
+        console.log("map clicked",e.latlng)
+        if(setSelectedMarker){
+            setSelectedMarker(null)
+        }
         setClickedLatLng([e.latlng.lat, e.latlng.lng]);
     };
 
     const HandleMapEvents = () => {
+        console.log("map event")
         useMapEvent('click', handleMapClick);
         return null;
     };
-
+    if(selectedMarker){
+        console.log("marker selcted",selectedMarker)
+    }
+console.log(complaints)
     return (
         <div className='flex justify-center p-3 z-30'>
-            <MapContainer center={[lat, lng]} zoom={15} scrollWheelZoom={true} className=' h-[80vh]  w-full md:w-[80vw]'>
+            <MapContainer center={[lat, lng]} zoom={16} scrollWheelZoom={true} className=' h-[80vh]  w-full md:w-[80vw]'>
                 <HandleMapEvents />
                 <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
+
                 {markers?.map((marker, index) => (
-                    <Marker key={index} position={marker.geocode} icon={customIcon}>
+                    <Marker
+                        key={index}
+                        position={marker.geocode}
+                        icon={getIcon(marker.type)}
+                        eventHandlers={{
+                            click: () => handleMarkerClick(marker),
+                            // click: ()=> setSelectedMarker(true)
+                        }}>
                         <Popup>{marker.popUp}</Popup>
                     </Marker>
                 ))}
                 {complaints?.map((complaint, index) => (
-                    <Marker key={index} position={[complaint.latitude, complaint.longitude]} icon={complaintIcon}>
-                        <Popup>{complaint._id} <br /> {complaint.description}</Popup>
+                    
+                    <Marker
+                        key={index}
+                        position={[complaint.latitude, complaint.longitude]}
+                        icon={complaintIcon}>
+                        <Popup>{complaint.description}</Popup>
                     </Marker>
                 ))}
                 {clickedLatLng && (
@@ -88,6 +135,7 @@ const Map = ({ clickedLatLng, setClickedLatLng, markers, complaints }) => {
                     </Marker>
                 )}
             </MapContainer>
+            
         </div>
     );
 }

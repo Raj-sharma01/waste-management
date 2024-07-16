@@ -1,5 +1,7 @@
 import { Complaint } from "../models/complaint.model.js";
 import { User } from "../models/user.model.js";
+import { Event } from "../models/event.model.js";
+import { Facility } from "../models/facility.model.js";
 
 export const complaintController = async (req, res) => {
     try {
@@ -52,32 +54,24 @@ export  const getAllComplaints = async (req,res)=>{
     }
 }
 
-/**
- 
-
-export const complaintStatusController= async (req,res)=>{
+export const getAllEvents = async (req, res) => {
     try {
-        const { userId } = req;
+        const events = await Event.find();
+        // console.log(officers)
+        res.status(201).json({ message: 'Got all events', success: true, events: events });
 
-        // Find the user
-        const user = await userModel.findById(userId);
-        if (!user) {
-            return res.status(404).json({ message: 'User not found', success: false });
-        }
-
-        // Populate complaints associated with the user
-        await user.populate('complaints');
-
-        // Extract complaint data
-        const complaintStatuses = user.complaints
-
-        // Send the complaint statuses as a response
-        res.status(200).json({ complaintStatuses, success: true });
-        
     } catch (error) {
-        console.log("Error in getting complaints status : ", error);
-        res.status(500).json({ message: Error in getting complaints status: ${error.message}, success: false });
+        console.log("Error in getting all events: ", error);
+        res.status(500).json({ message: `Error in getting all events: ${error.message}`, success: false });
     }
 }
 
- **/
+// Get all facilities
+export const getAllFacilities = async (req, res) => {
+    try {
+        const facilities = await Facility.find();
+        res.status(200).json(facilities);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};

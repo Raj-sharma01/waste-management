@@ -1,0 +1,73 @@
+/* Map.css */
+
+/* Container for the map */
+.map-container {
+    display: flex;
+    justify-content: center;
+    padding: 2rem;
+    z-index: 30;
+    background-color: #f0f4f8; /* Light background for better contrast */
+    border-radius: 10px;
+}
+
+/* Styles for the map itself */
+.map {
+    height: 80vh;
+    width: 100%;
+    max-width: 80vw;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add a subtle shadow */
+    border: 2px solid #ddd; /* Add a light border */
+}
+
+/* Custom marker styles */
+.custom-marker,
+.custom-complaint-marker {
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    transition: transform 0.3s ease; /* Smooth transformation for hover effect */
+}
+
+/* Hover effect for markers */
+.custom-marker:hover,
+.custom-complaint-marker:hover {
+    transform: scale(1.1); /* Slightly enlarge marker on hover */
+}
+
+/* Styles for leaflet container */
+.leaflet-container {
+    background: #e0e6ed; /* Set a background color for the map container */
+    border-radius: 15px;
+}
+
+/* Styles for the popups */
+.leaflet-popup-content-wrapper {
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+}
+
+.leaflet-popup-tip-container {
+    display: none; /* Hide the default popup tip */
+}
+
+/* Custom styles for popup content */
+.leaflet-popup-content {
+    margin: 0;
+    color: #333;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+    .map-container {
+        padding: 1rem;
+    }
+
+    .map {
+        height: 60vh;
+        max-width: 100%;
+    }
+}

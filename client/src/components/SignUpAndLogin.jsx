@@ -8,7 +8,7 @@ const SignUpAndLogin = ({showLogin, setShowLogin}) => {
     const { register, handleSubmit } = useForm();
     const [isLogin, setIsLogin] = useState(true); // Initial state is login
     const navigate = useNavigate();
-    const {setEmail, setId, setUsername} = useContext(UserContext)
+    const { setEmail, setId, setUsername, setRole } = useContext(UserContext);
 
 
     const handleFinish = async (data) => {
@@ -23,10 +23,13 @@ const SignUpAndLogin = ({showLogin, setShowLogin}) => {
                         console.log(res.data)
                         setId(res.data.userId);
                         setUsername(res.data.username);
-                        setEmail(res.data.email)
+                        setEmail(res.data.email);
+                        setRole(res.data.role);
+                        navigateBasedOnRole(res.data.role);  // Navigate based on role
+
                     }
                 })
-                navigate("/user"); 
+                navigate("/"); 
             } else {
                 alert(res.data.message);
             }
@@ -35,6 +38,15 @@ const SignUpAndLogin = ({showLogin, setShowLogin}) => {
             alert("Something Went Wrong");
         }
     }
+    const navigateBasedOnRole = (role) => {
+        if (role === 'user') {
+            navigate("/");
+        } else if (role === 'admin') {
+            navigate("/admin");
+        } else if (role === 'officer') {
+            navigate("/officer");
+        }
+    };
 
     const closeLoginForm=()=>{
         setShowLogin(false);

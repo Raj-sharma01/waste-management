@@ -1,6 +1,7 @@
-import { useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import icon from '../assets/react.svg';
+import icon from '../assets/cleanCampusLogo-modified.png';
+import userIcon from '../assets/userIcon.png'
 import SignUpAndLogin from "./SignUpAndLogin";
 import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
@@ -11,17 +12,35 @@ function Navbar() {
   const [hamMenu, setHamMenu] = useState(false)
   const [showLogin, setShowLogin] = useState(false)
 
-  const {username, email}=useContext(UserContext)
+  const [reRender, setReRender] = useState(false);
+  useEffect(() => {
+    setReRender((prev) => !prev)
+  }, [])
 
+  const { id, role, setRole, setId, setUsername, username, email, setEmail } = useContext(UserContext);  // Add role context
 
+  console.log("username ", username)
 
-  const location = useLocation();
+  // const location = useLocation();
   const navigate = useNavigate();
-  console.log(location.pathname.split("/")[1])
-  const role = location.pathname.split("/")[1];
+  // console.log(location.pathname.split("/")[1])
+  // const role = location.pathname.split("/")[1];
 
   const changeProfileDropDown = () => {
     setProfileDropDown((prev) => !prev);
+  }
+
+  const handleSignOut = async () => {
+    try {
+      await axios.get('/api/auth/logout');
+      setUsername(null);
+      setEmail(null)
+      setRole(null)
+      navigate('/')
+    } catch (error) {
+      console.log("error --> ", error)
+    }
+
   }
 
   const changeHamMenu = () => {
@@ -33,18 +52,21 @@ function Navbar() {
   }
 
   let options = [];
+  console.log("role= ", role)
 
-  if (role === "user") {
+  // very important
+  // https://reactrouter.com/en/main/components/nav-link#end
+  if (role === "user" || role === null) {
     options = [
-      { label: "Dashboard", path: "/user" },
-      { label: "Complaints", path: "/user/complaints" },
-      { label: "Guide", path: "/user/guide" },
-      { label: "Events", path: "/user/events" },
+      { label: "Dashboard", path: "/" ,exact:true},
+      { label: "Complaints", path: "/complaints" },
+      { label: "Guide", path: "/guide" },
+      { label: "Events", path: "/events" },
     ];
   }
   else if (role === "admin") {
     options = [
-      { label: "Dashboard", path: "/admin" },
+      { label: "Dashboard", path: "/admin", exact:true },
       { label: "Complaints", path: "/admin/complaints" },
       { label: "Officers", path: "/admin/officers" },
       { label: "Events", path: "/admin/events" },
@@ -54,9 +76,10 @@ function Navbar() {
   }
   else if (role === 'officer') {
     options = [
-      { label: "Dashboard", path: "/officer" },
+      { label: "Dashboard", path: "/officer",exact:true },
       { label: "Complaints", path: "/officer/complaints" },
       { label: "Events", path: "/officer/events" },
+      { label: "Facilities", path: "/officer/facitities" }
     ];
   }
 
@@ -87,14 +110,24 @@ function Navbar() {
             </div>
             <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
               <div className="flex flex-shrink-0 items-center">
-                <img className="h-8 w-auto" src={icon} alt="Your Company" />
+                <img className="h-8 w-auto" src={icon} alt="Clean Campus" />
               </div>
               <div className="hidden sm:ml-6 sm:block">
                 <div className="flex space-x-4">
                   {/* Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" */}
                   {options.map((option, index) => {
                     return (
-                      <NavLink to={option.path} className={({ isActive }) => (isActive ? "bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium" : "text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium")}>{option.label}</NavLink>)
+                      <NavLink
+                        key={index}
+                        to={option.path}
+                        end={option.exact}
+                        className={({ isActive }) => (
+                          isActive
+                            ? "bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium"
+                            : "text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium")}
+                      >
+                        {option.label}
+                      </NavLink>)
                   })}
 
                 </div>
@@ -102,26 +135,27 @@ function Navbar() {
             </div>
             <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
 
-              {!username&&<button className="relative rounded-md bg-gray-800 px-3 py-2 text-sm font-medium text-white hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 hover:bg-green-800"
-                onClick={() => toggleLoginForm()}>Login</button>}
+              {!email && <button className="relative rounded-md bg-gray-800 px-3 py-2 text-sm font-medium text-white hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 hover:bg-green-800"
+                onClick={() => { navigate('/login') }}>Login</button>}
               {/* Profile dropdown */}
               <div className="relative ml-3" onClick={() => changeProfileDropDown()}>
                 <div>
                   <button type="button" className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
                     <span className="absolute -inset-1.5" />
                     <span className="sr-only">Open user menu</span>
-                    <img className="h-8 w-8 rounded-full" src={icon} alt />
+                    <img className="h-8 w-8 rounded-full" src={userIcon} alt />
                   </button>
                 </div>
-
-                <div className={"absolute right-0 z-[50] mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none " + (ProfileDropDown ? '' : 'hidden')}
-                  role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabIndex={-1}
-                >
-                  {/* Active: "bg-gray-100", Not Active: "" */}
-                  <span  className="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabIndex={-1} id="user-menu-item-0">{username}</span>
-                  <span  className="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabIndex={-1} id="user-menu-item-1">{email}</span>
-                  <a href="#" className="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabIndex={-1} id="user-menu-item-2">Sign out</a>
-                </div>
+                {username &&
+                  <div className={"absolute right-0 z-[5000] mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none " + (ProfileDropDown ? '' : 'hidden')}
+                    role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabIndex={-1}
+                  >
+                    {/* Active: "bg-gray-100", Not Active: "" */}
+                    <span className="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabIndex={-1} id="user-menu-item-0">{username}</span>
+                    <span className="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabIndex={-1} id="user-menu-item-1">{email}</span>
+                    <button onClick={handleSignOut} className="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabIndex={-1} id="user-menu-item-2">Sign out</button>
+                  </div>
+                }
               </div>
             </div>
           </div>
@@ -132,19 +166,30 @@ function Navbar() {
             {/* Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" */}
             {options.map((option, index) => {
               return (
-                <NavLink to={option.path} className={({ isActive }) => (isActive ? "bg-gray-900 text-white block rounded-md px-3 py-2 text-base font-medium" : "text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium")}>{option.label}</NavLink>)
+                <NavLink
+                  key={index}
+                  to={option.path}
+                  end={option.exact}
+                  className={({ isActive }) => (
+                    isActive
+                      ? "bg-gray-900 text-white block rounded-md px-3 py-2 text-base font-medium"
+                      : "text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium")}
+                >
+                  {option.label}
+                </NavLink>)
             })}
           </div>
         </div>}
 
       </nav>
       {/* Modal */}
-      {showLogin && <div className="overflow-y-auto overflow-x-hidden fixed z-[10000] flex justify-center items-center w-full md:inset-0 h-[calc(100%)] pb-4 max-h-full backdrop-blur-sm ">
-        {/* h-96 */}
+      {/* {
+      showLogin && <div className="overflow-y-auto overflow-x-hidden fixed z-[10000] flex justify-center items-center w-full md:inset-0 h-[calc(100%)] pb-4 max-h-full backdrop-blur-sm ">
         <div className="mt-5 relative w-full max-w-md max-h-full">
           <SignUpAndLogin showLogin={showLogin} setShowLogin={setShowLogin} />
         </div>
-      </div>}
+      </div>
+      } */}
     </>
   )
 }
