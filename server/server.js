@@ -10,7 +10,7 @@ import path from 'path';
 
 let app = express();
 const corsOptions = {
-    origin: 'http://localhost:5173',
+    origin: ['https://cleancampus.onrender.com','http://localhost:5173'],
     optionsSuccessStatus: 200,
     credentials: true
 }
