@@ -1,18 +1,19 @@
 import React from 'react'
 import { jwtDecode } from 'jwt-decode';
 import LoginForm from '../pages/Login';
-import {useLocation, Navigate } from 'react-router-dom';
+import { useLocation, Navigate } from 'react-router-dom';
 
 const ProtectedRoute = ({ children }) => {
     const location = useLocation();
     console.log(location)
-    const token = document.cookie.split("; ").find((c) => c.startsWith("token="));
     let decodedToken = null;
     let isTokenExpired = true;
-    const tokenValue = token.split("=")[1];
-    console.log(token)
-    console.log(tokenValue)
     try {
+        const token = document.cookie.split("; ").find((c) => c.startsWith("token="));
+
+        const tokenValue = token.split("=")[1];
+        console.log(token)
+        console.log(tokenValue)
         if (tokenValue) {
             decodedToken = jwtDecode(tokenValue);
             const currentTime = Math.floor(Date.now() / 1000);

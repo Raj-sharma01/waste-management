@@ -1,7 +1,8 @@
 import mongoose from 'mongoose'
+import 'dotenv/config'
 
 export const connetDB = () => {
-    mongoose.connect('mongodb://127.0.0.1:27017/WMS')
+    mongoose.connect(process.env.MONGO_URL)
 
     mongoose.connection.once('open', () => {
         console.log("Database connected successfully")

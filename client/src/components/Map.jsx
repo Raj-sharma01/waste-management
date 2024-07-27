@@ -14,6 +14,7 @@ import DustbinIcon from '../assets/dustbin.png'
 import CompostingFacilityIcon from '../assets/waste-management.jpg'
 import LandfillSiteIcon from '../assets/waste-management.jpg'
 import WasteTransferStationIcon from '../assets/waste-management.jpg'
+import LocationIcon from '../assets/location.png'
 
 const Map = ({ clickedLatLng, setClickedLatLng, complaints,setSelectedMarker,selectedMarker,refreshMap }) => {
     const [lng, setLng] = useState(86.14712961646475);
@@ -47,10 +48,10 @@ const Map = ({ clickedLatLng, setClickedLatLng, complaints,setSelectedMarker,sel
     };
 
     console.log(markers)
-    // const customIcon = new Icon({
-    //     iconUrl: DustbinIcon,
-    //     iconSize: [38, 38],
-    // });
+    const customIcon = new Icon({
+        iconUrl: LocationIcon,
+        iconSize: [38, 38],
+    });
 
     const getIcon = (type) => {
         switch (type) {
@@ -100,8 +101,8 @@ const Map = ({ clickedLatLng, setClickedLatLng, complaints,setSelectedMarker,sel
     }
 console.log(complaints)
     return (
-        <div className='flex justify-center p-3 z-30'>
-            <MapContainer center={[lat, lng]} zoom={16} scrollWheelZoom={true} className=' h-[80vh]  w-full md:w-[80vw]'>
+        <div className='flex justify-center p-3 z-30 rounded-lg'>
+            <MapContainer center={[lat, lng]} zoom={16} scrollWheelZoom={true} className=' h-[80vh]  w-full md:w-[80vw] rounded-xl'>
                 <HandleMapEvents />
                 <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -130,7 +131,7 @@ console.log(complaints)
                     </Marker>
                 ))}
                 {clickedLatLng && (
-                    <Marker position={clickedLatLng}>
+                    <Marker position={clickedLatLng} icon={customIcon}>
                         <Popup>Latitude: {clickedLatLng[0]}, Longitude: {clickedLatLng[1]}</Popup>
                     </Marker>
                 )}
